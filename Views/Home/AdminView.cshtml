@@ -1,0 +1,591 @@
+﻿
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout .cshtml";
+
+}
+<link href="https://cdn.datatables.net/1.11.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/buttons/2.0.0/css/buttons.dataTables.min.css" rel="stylesheet" />
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+</head>
+<body>
+    <div class="container-scroller">
+        <!-- partial:partials/_navbar.html -->
+        <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+
+            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+                <a class="navbar-brand brand-logo mr-5" href="index.html"><img src=@Url.Content("~/AdminAssets/images/logo.svg") class="mr-2" alt="logo" /></a>
+                <a class="navbar-brand brand-logo-mini" href="index.html"><img src=@Url.Content("~/AdminAssets/images/logo-mini.svg") alt="logo" /></a>
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+                <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+                    <span class="icon-menu"></span>
+                </button>
+                <ul class="navbar-nav mr-lg-2">
+                    <li class="nav-item nav-search d-none d-lg-block">
+                        <div class="input-group">
+                            <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
+                                <span class="input-group-text" id="search">
+                                    <i class="icon-search"></i>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
+                        </div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav navbar-nav-right">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
+                            <i class="icon-bell mx-0"></i>
+                            <span class="count"></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+                            <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
+                            <a class="dropdown-item preview-item">
+                                <div class="preview-thumbnail">
+                                    <div class="preview-icon bg-success">
+                                        <i class="ti-info-alt mx-0"></i>
+                                    </div>
+                                </div>
+                                <div class="preview-item-content">
+                                    <h6 class="preview-subject font-weight-normal">Application Error</h6>
+                                    <p class="font-weight-light small-text mb-0 text-muted">
+                                        Just now
+                                    </p>
+                                </div>
+                            </a>
+                            <a class="dropdown-item preview-item">
+                                <div class="preview-thumbnail">
+                                    <div class="preview-icon bg-warning">
+                                        <i class="ti-settings mx-0"></i>
+                                    </div>
+                                </div>
+                                <div class="preview-item-content">
+                                    <h6 class="preview-subject font-weight-normal">Settings</h6>
+                                    <p class="font-weight-light small-text mb-0 text-muted">
+                                        Private message
+                                    </p>
+                                </div>
+                            </a>
+                            <a class="dropdown-item preview-item">
+                                <div class="preview-thumbnail">
+                                    <div class="preview-icon bg-info">
+                                        <i class="ti-user mx-0"></i>
+                                    </div>
+                                </div>
+                                <div class="preview-item-content">
+                                    <h6 class="preview-subject font-weight-normal">New user registration</h6>
+                                    <p class="font-weight-light small-text mb-0 text-muted">
+                                        2 days ago
+                                    </p>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item nav-profile dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+                            <img src="@Url.Content(ViewBag.ProfilePicPath)" alt="profile" />
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                            <a class="dropdown-item" href="@Url.Action("Profile", "Home")">
+                                <i class="ti-settings text-primary"></i>
+                                Profile
+                            </a>
+                            <form asp-action="Logout" asp-controller="Auth" method="post" class="dropdown-item p-0">
+                                <button type="submit" class="btn btn-link p-0">
+                                    <i class="ti-power-off text-primary"></i>
+                                    Logout
+                                </button>
+                        </form>
+                        </div>
+                    </li>
+
+                   
+                </ul>
+                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+                    <span class="icon-menu"></span>
+                </button>
+            </div>
+        </nav>
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <!-- partial:partials/_settings-panel.html -->
+            <div class="theme-setting-wrapper">
+                <div id="settings-trigger"><i class="ti-settings"></i></div>
+                <div id="theme-settings" class="settings-panel">
+                    <i class="settings-close ti-close"></i>
+                    <p class="settings-heading">SIDEBAR SKINS</p>
+                    <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
+                    <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
+                    <p class="settings-heading mt-2">HEADER SKINS</p>
+                    <div class="color-tiles mx-0 px-4">
+                        <div class="tiles success"></div>
+                        <div class="tiles warning"></div>
+                        <div class="tiles danger"></div>
+                        <div class="tiles info"></div>
+                        <div class="tiles dark"></div>
+                        <div class="tiles default"></div>
+                    </div>
+                </div>
+            </div>
+         
+            <!-- partial -->
+            <!-- partial:partials/_sidebar.html -->
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("AdminView", "Home")">
+                            <i class="icon-grid menu-icon"></i>
+                            <span class="menu-title">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#user" aria-expanded="false" aria-controls="user">
+                            <i class="icon-layout menu-icon"></i>
+                            <span class="menu-title">Users</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="user">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> 
+                                    <a class="nav-link" href="@Url.Action("Index", "Userrs")"> View All</a></li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("MembersProfile", "Userrs")">View Members</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("TrainersProfile", "Userrs")">View Trainers</a>
+                                </li>
+                                <li class="nav-item"> 
+                                    <a class="nav-link" href="@Url.Action("Create", "Userrs")">Create</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#mplan" aria-expanded="false" aria-controls="mplan">
+                            <i class="icon-columns menu-icon"></i>
+                            <span class="menu-title">Membership Plans</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="mplan">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Index", "MembershipPlans")">View All</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Create", "MembershipPlans")">Create</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#subs" aria-expanded="false" aria-controls="subs">
+                            <i class="icon-bar-graph menu-icon"></i>
+                            <span class="menu-title">Subscriptions</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="subs">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Index", "Subscriptions")"> View All</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Create", "Subscriptions")">Create</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#rev" aria-expanded="false" aria-controls="rev">
+                            <i class="icon-bar-graph menu-icon"></i>
+                            <span class="menu-title">Reports</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="rev">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Index", "Reports")"> View All</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Create","Reports")"> Generate</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#roles" aria-expanded="false" aria-controls="roles">
+                            <i class="icon-grid-2 menu-icon"></i>
+                            <span class="menu-title">Roles</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="roles">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Index", "Rolees")"> View All</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Create", "Rolees")">Create</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#users" aria-expanded="false" aria-controls="users">
+                            <i class="icon-contract menu-icon"></i>
+                            <span class="menu-title">User Login </span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="users">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Index", "UserLogins")"> View All</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Create", "UserLogins")">Create</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#staticPages" aria-expanded="false" aria-controls="staticPages">
+                            <i class="icon-docs menu-icon"></i>
+                            <span class="menu-title">Static Pages</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="staticPages">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Home", "StaticPages")">Home</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("AboutUs", "StaticPages")">About Us</a></li>
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("ContactUs", "StaticPages")">Contact Us</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+                            <i class="icon-head menu-icon"></i>
+                            <span class="menu-title">User Pages</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="auth">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Login", "Auth")"> Login </a></li>
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Register", "Auth")"> Register </a></li>
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Member", "Home")"> Member Profile </a></li>
+                                <li class="nav-item"> <a class="nav-link" href="@Url.Action("Trainer", "Home")"> Trainer Profile </a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <!-- partial -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="row">
+                        <div class="col-md-12 grid-margin">
+                            <div class="row">
+                                <div class="col-12 col-xl-8 mb-4 mb-xl-0">
+                                    <h3 class="font-weight-bold">Welcome @ViewBag.FirstName</h3>
+                                    <h6 class="font-weight-normal mb-0">All systems are running smoothly! </h6>
+                                </div>
+                                <div class="col-12 col-xl-4">
+                                    <div class="justify-content-end d-flex">
+                                        <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
+                                            <button class="btn btn-sm btn-light bg-white" type="button">
+                                                <i class="mdi mdi-calendar"></i> Today (@DateTime.Now.ToString("dd MMM yyyy"))
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 grid-margin stretch-card">
+                            <div class="card tale-bg">
+                                <div class="card-people mt-auto">
+                                    <img src=@Url.Content("~/AdminAssets/images/dashboard/people.svg") alt="people">
+                                    <div class="weather-info">
+                                        <div class="d-flex">
+                                            <div>
+                                                <h2 class="mb-0 font-weight-normal"><i class="icon-sun mr-2"></i>31<sup>C</sup></h2>
+                                            </div>
+                                            <div class="ml-2">
+                                                <h4 class="location font-weight-normal">Amman</h4>
+                                                <h6 class="font-weight-normal">Jordan</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 grid-margin transparent">
+                            <div class="row">
+                                <div class="col-md-6 mb-4 stretch-card transparent">
+                                    <div class="card card-tale">
+                                        <div class="card-body">
+                                            <p class="mb-4">Number of Members</p>
+                                            <p class="fs-30 mb-2">@ViewBag.NumberOfMembers</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4 stretch-card transparent">
+                                    <div class="card card-dark-blue">
+                                        <div class="card-body">
+                                            <p class="mb-4">Active Subscriptions</p>
+                                            <p class="fs-30 mb-2">@ViewBag.ActiveSubscriptions</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
+                                    <div class="card card-light-blue">
+                                        <div class="card-body">
+                                            <p class="mb-4">Total Revenue</p>
+                                            <p class="fs-30 mb-2">@ViewBag.TotalRevenue</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 stretch-card transparent">
+                                    <div class="card card-light-danger">
+                                        <div class="card-body">
+                                            <p class="mb-4">Monthly Revenue</p>
+                                            <p class="fs-30 mb-2">@ViewBag.MonthlyRevenue</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Left Side: Metrics and Chart -->
+                        <div class="col-md-12 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="card-title text-center fs-3 ">Subscription Details</p>
+                                    <p class="font-weight-500 text-center fs-4 ">Key metrics and insights about GYM subscriptions per month.</p>
+                                    <div class="d-flex flex-wrap mb-5">
+                                        <!-- Active Subscriptions Metric -->
+                                        <div class="mr-5 mt-3">
+                                            <p class="text-muted fs-4">Active Subscriptions</p>
+                                            <h3 class="text-primary fs-30 font-weight-medium">
+                                                @ViewBag.ActiveSubscriptions
+                                            </h3>
+                                        </div>
+
+                                        <!-- Search Button -->
+                                        <div class="mt-4">
+                                            <form method="get" asp-action="Search" asp-controller="Home">
+                                                <button type="submit" class="btn btn-dark">Search</button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <!-- Chart Container -->
+                                    <h5 class="card-title">Monthly Subscriptions</h5>
+                                    <canvas id="subscriptionsChart" style="height: 250px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Left Section: Report List -->
+                        <div class="col-md-4">
+                            <div class="card" style="margin-bottom: 50px " >
+                                <div class="card-body">
+                                    <h4 class="card-title">Generate Report</h4>
+                                    <div class="mb-3">
+                                        <label for="report-dropdown" class="form-label">Select Report</label>
+                                        <select id="report-dropdown" class="form-select">
+                                            <option value="" selected disabled>Select a report</option>
+                                            <option value="annual">Annual Report</option>
+                                            <option value="monthly">Monthly Report</option>
+                                            <option value="memberProgress">Member Progress</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <form>
+                                            <div class="mb-3">
+                                                <label type="text" class="form-label">Report Title</label>
+                                                <input type="text" class="form-control" id="ReportTitle" name="ReportTitle"  readonly />
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <button id="generate-report" class="btn btn-primary w-100">Generate Report</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Section: Report Display -->
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-body">
+                                    <!-- Annual Report Table -->
+                                    <table id="an-report" class="report-table" style="display:none">
+                                        <thead>
+                                            <tr>
+                                                <th>Key</th>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>1</td><td>Total Members</td><td>@ViewBag.numberOfMembers</td></tr>
+                                            <tr><td>2</td><td>Active Subscriptions</td><td>@ViewBag.activeSubscriptions</td></tr>
+                                            <tr><td>3</td><td>Total Revenue</td><td>@ViewBag.totalRevenue</td></tr>
+                                        </tbody>
+                                    </table>
+
+                                    <!-- Monthly Report Table -->
+                                    <table id="mn-report" class="report-table" style="display:none">
+                                        <thead>
+                                            <tr>
+                                                <th>Key</th>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>1</td><td>Monthly Revenue</td><td>@ViewBag.monthlyRevenue</td></tr>
+                                            <tr><td>2</td><td>Expiring Soon</td><td>@ViewBag.expiringSoon</td></tr>
+
+                                        </tbody>
+                                    </table>
+
+                                    <!-- Member Progress Table -->
+                                    <table id="mp-report" class="report-table" style="display:none">
+                                        <thead>
+                                            <tr>
+                                                <th>Session ID</th>
+                                                <th>Member Name</th>
+                                                <th>Attendance</th>
+                                                <th>Trainer ID</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.MemberProgress != null)
+                                            {
+                                                foreach (var item in (IEnumerable<dynamic>)ViewBag.MemberProgress)
+                                                {
+                                                    <tr>
+                                                        <td>@item.SessionId</td>
+                                                        <td>@item.MemberName</td>
+                                                        <td>@(item.Attendance ? "Attended" : "Absent")</td>
+                                                        <td>@item.TrainerId</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="4" class="text-center">No data available</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="card-title mb-0">Testimonials</p>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-borderless">
+                                            <thead>
+                                                <tr>
+                                                    <th>User Name</th>
+                                                    <th>Testimonial Content</th>
+                                                    <th>Submitted At</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var testimonial in ViewBag.Testimonials)
+                                                {
+                                                    <tr>
+                                                        <td>@testimonial.UserName</td>
+                                                        <td>@testimonial.TContent</td>
+                                                        <td>@testimonial.SubmittedAt.ToString("MM/dd/yyyy HH:mm")</td>
+                                                        <td>@testimonial.Status</td>
+                                                        <td>
+                                                            @if (testimonial.Status == "Pending")
+                                                            {
+                                                                <form asp-action="ApproveItem" asp-route-id="@testimonial.TestimonialId" method="post" style="display:inline;">
+                                                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                                                </form>
+                                                                <form asp-action="RejectItem" asp-route-id="@testimonial.TestimonialId" method="post" style="display:inline;">
+                                                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                                                </form>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="container mt-4">
+                            <h2 class="mb-4 text-center">Manage Static Pages</h2>
+                            <div class="row">
+                                <!-- Card for Home Page -->
+                                <div class="col-md-4 stretch-card grid-margin">
+                                    <div class="card text-center">
+                                        <img src="@Url.Content("~/AdminAssets/images/home.jpg")" class="card-img-top img-fluid" style="width: 100%; height: 200px; object-fit: cover;" alt="Home Page Image">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Home Page</h5>
+                                            <p class="card-text">Manage the content of the Home page.</p>
+                                            <a href="@Url.Action("Index", "Homepages")" class="btn btn-primary">Edit Content</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card for About Us Page -->
+                                <div class="col-md-4 stretch-card grid-margin">
+                                    <div class="card text-center">
+                                        <img src="@Url.Content("~/AdminAssets/images/aboutus.jpg")" class="card-img-top img-fluid" style="width: 100%; height: 200px; object-fit: cover;" alt="About Us Page Image">
+                                        <div class="card-body">
+                                            <h5 class="card-title">About Us Page</h5>
+                                            <p class="card-text">Manage the content of the About Us page.</p>
+                                            <a href="@Url.Action("Index", "Aboutuspages")" class="btn btn-primary">Edit Content</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card for Contact Us Page -->
+                                <div class="col-md-4 stretch-card grid-margin">
+                                    <div class="card text-center">
+                                        <img src="@Url.Content("~/AdminAssets/images/contactus.jpg")" class="card-img-top img-fluid" style="width: 100%; height: 200px; object-fit: cover;" alt="Contact Us Page Image">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Contact Us Page</h5>
+                                            <p class="card-text">Manage the content of the Contact Us page.</p>
+                                            <a href="@Url.Action("Index", "Contactuspages")" class="btn btn-primary">Edit Content</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                    </div>
+
+                    
+                </div>
+            </div>
+                <!-- content-wrapper ends -->
+        </div>
+            <!-- main-panel ends -->
+        </div>
+    </div>  
+    <!-- container-scroller -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"defer></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.0/js/dataTables.buttons.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.0/js/buttons.html5.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/AdminAssets/js/report.js"></script>
+    <script src="/AdminAssets/js/customChart.js"></script>
+
+
+</body>
+
+</html>
+
+

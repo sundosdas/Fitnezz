@@ -1,0 +1,177 @@
+﻿@model Userr
+@{
+    ViewData["Title"] = "Register";
+    Layout = null;
+}
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Fitness GYM </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800" rel="stylesheet">
+
+    <link rel="stylesheet" href=@Url.Content("~/Assets/css/bootstrap.css")>
+    <link rel="stylesheet" href=@Url.Content("~/Assets/css/animate.css")>
+    <link rel="stylesheet" href=@Url.Content("~/Assets/css/owl.carousel.min.css")>
+
+    <link rel="stylesheet" href=@Url.Content("~/Assets/css/magnific-popup.css")>
+
+    <link rel="stylesheet" href=@Url.Content("~/Assets/fonts/ionicons/css/ionicons.min.css")>
+    <link rel="stylesheet" href=@Url.Content("~/Assets/fonts/fontawesome/css/font-awesome.min.css")>
+
+    <!-- Theme Style -->
+    <link rel="stylesheet" href=@Url.Content("~/Assets/css/style.css")>
+</head>
+<body>
+    <header role="banner">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">Fitne<span>zz</span></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarsExample05">
+                    <ul class="navbar-nav mr-auto pl-lg-5 pl-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Index", "Home")">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("About", "Home")">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("MembershipPlans", "Home")">Membership Plans</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Contact", "Home")">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <section class="home-slider-loop-false  inner-page owl-carousel">
+        <div class="slider-item" style="background-image: url('@Url.Content("~/Assets/img/slider-1.jpg")');">
+
+            <div class="container">
+                <div class="row slider-text align-items-center justify-content-center">
+                    <div class="col-md-8 text-center col-sm-12 element-animate">
+                        <h1>Become A Member</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 70vh; margin-bottom: 30px; margin-top: 100px;">
+        <div class="form-wrap overlap primary element-animate">
+            <div class="col-md-12">
+                <h2 class="h2">Become A Member</h2>
+                <form asp-action="Register" method="post" enctype="multipart/form-data" >
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label asp-for="FirstName"></label>
+                                <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="LastName"></label>
+                                <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+                   
+                        
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="Email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Phone"></label>
+                        <input asp-for="Phone" type="text" class="form-control" placeholder="Phone Number" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Address"></label>
+                        <input asp-for="Address" type="text" class="form-control" placeholder="Address" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" class="form-control" placeholder="Username" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control" placeholder="Password" required />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ImageFile"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                        <input asp-for="ImageFile" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-warning btn-block py-3" value="Create your account" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-md-4 mb-5">
+                    <h3>About Us</h3>
+                    <p class="mb-5">At Fitnezz Gym, we believe that fitness is not just a goal—it is a journey towards a better you. Our mission is to empower individuals to lead healthier, stronger, and more fulfilling lives.</p>
+                    <ul class="list-unstyled footer-link d-flex footer-social">
+                        <li><a href="#" class="p-2"><span class="fa fa-twitter"></span></a></li>
+                        <li><a href="#" class="p-2"><span class="fa fa-facebook"></span></a></li>
+                        <li><a href="#" class="p-2"><span class="fa fa-linkedin"></span></a></li>
+                        <li><a href="#" class="p-2"><span class="fa fa-instagram"></span></a></li>
+                    </ul>
+                </div>
+                <div class="col-md-5 mb-5">
+                    <h3>Contact Info</h3>
+                    <ul class="list-unstyled footer-link">
+                        <li class="d-block"><span>Address:</span> Amman, Dabouq 21 st.</li>
+                        <li><span>Telephone:</span> +962 786193557</li>
+                        <li><span>Email:</span> info@fitnezzgym.com</li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-5">
+                    <h3>Quick Links</h3>
+                    <ul class="list-unstyled footer-link">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Disclaimers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- END footer -->-
+    <!-- JS Files -->
+
+    <script src="@Url.Content("~/Assets/js/jquery-3.2.1.min.js")"></script>
+    <script src="@Url.Content("~/Assets/js/popper.min.js")"></script>
+    <script src="@Url.Content("~/Assets/js/bootstrap.min.js")"></script>
+    <script src="@Url.Content("~/Assets/js/owl.carousel.min.js")"></script>
+    <script src="@Url.Content("~/Assets/js/jquery.waypoints.min.js")"></script>
+    <script src="@Url.Content("~/Assets/js/jquery.magnific-popup.min.js")"></script>
+    <script src="@Url.Content("~/Assets/js/magnific-popup-options.js")"></script>
+    <script src="@Url.Content("~/Assets/js/main.js")"></script>
+</body>
+</html>

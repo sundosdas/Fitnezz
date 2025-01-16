@@ -1,0 +1,129 @@
+﻿@{
+    ViewData["Title"] = "Member Dashboard";
+}
+<header role="banner">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("MemberView", "Home")">Fitne<span>zz</span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarsExample05">
+                <ul class="navbar-nav mr-auto pl-lg-5 pl-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="@Url.Action("MemberView", "Home")">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("AboutUs", "Home")">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("ContactUs", "Home")">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "MembershipPlans")">Membership Plans</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Testimonials", "Member")">Testimonials</a>
+                    </li>
+                </ul>
+
+                <!-- Member Profile Section -->
+                <ul class="navbar-nav ml-auto">
+                    @if (ViewBag.ProfilePicPath != null)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="memberDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="@Url.Content(ViewBag.ProfilePicPath)" alt="Member Pic" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; margin-right: 8px;">
+                                @ViewBag.MemberName
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="memberDropdown">
+                                <a class="dropdown-item" href="@Url.Action("Profile", "Home")">Profile</a>
+                                <form asp-action="Logout" asp-controller="Auth" method="post" class="dropdown-item p-0">
+                                    <button type="submit" class="btn btn-link p-0 text-dark">Logout</button>
+                                </form>
+                            </div>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item cta-btn">
+                            <a class="nav-link btn btn-primary text-white" href="@Url.Action("Login", "Auth")">Login</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Slider Section -->
+<section class="home-slider owl-carousel">
+    <!-- Slider 1 -->
+    @if (ViewBag.HomepageContent != null)
+   {
+    <div class="slider-item" style="background-image: url('@ViewBag.HomepageContent.SliderImage1');">
+        <div class="container">
+            <div class="row slider-text align-items-center justify-content-center">
+                <div class="col-md-8 text-center col-sm-12 element-animate">
+                    <h1>@ViewBag.HomepageContent.SliderTitle1</h1>
+                    <p class="mb-5">@ViewBag.HomepageContent.SliderSubtitle1</p>
+                    <p>
+                        <a href="#plans" class="btn btn-white btn-outline-white">Get Started</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slider 2 -->
+    <div class="slider-item" style="background-image: url('@ViewBag.HomepageContent.SliderImage2');">
+        <div class="container">
+            <div class="row slider-text align-items-center justify-content-center">
+                <div class="col-md-8 text-center col-sm-12 element-animate">
+                    <h1>@ViewBag.HomepageContent.SliderTitle2</h1>
+                    <p class="mb-5">@ViewBag.HomepageContent.SliderSubtitle2</p>
+                    <p>
+                        <a href="#plans" class="btn btn-white btn-outline-white">Get Started</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+    else 
+    {
+        <p>No homepage content available.</p>
+    }
+</section>
+
+<!-- MemberShip Plans-->
+<section class="section element-animate">
+    <div class="clearfix mb-5 pb-5">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12 text-center heading-wrap">
+                    <h2>Featured Plans</h2>
+                    <span class="back-text">Our Plans</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="owl-carousel centernonloop">
+        @foreach (var plan in ViewBag.Plans)
+        {
+            <a href="@Url.Action("Details", "MembershipPlan", new { id = plan.PlanId })" class="item-class">
+                <div class="text">
+                    <p class="class-price">$@plan.Price</p>
+                    <h2 class="class-heading">@plan.Name</h2>
+                </div>
+                <img src="@plan.ImagePath" alt="@plan.Name" class="img-fluid">
+            </a>
+        }
+    </div>
+</section>
+
+
+
+

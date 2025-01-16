@@ -1,0 +1,47 @@
+﻿@model IEnumerable<gym.Models.Session>
+
+@{
+    ViewData["Title"] = "Sessions Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <h1 class="text-center">Sessions Management</h1>
+    <div class="text-left mb-3">
+        <a asp-action="Create" class="btn btn-primary">Create New Session</a>
+    </div>
+
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.StartTime)</th>
+                <th>@Html.DisplayNameFor(model => model.EndTime)</th>
+                <th>@Html.DisplayNameFor(model => model.CheckIn)</th>
+                <th>@Html.DisplayNameFor(model => model.CheckOut)</th>
+                <th>@Html.DisplayNameFor(model => model.Status)</th>
+                <th>Member Name</th>
+                <th>Trainer Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
+                    <td>@Html.DisplayFor(modelItem => item.EndTime)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CheckIn)</td>
+                    <td>@Html.DisplayFor(modelItem => item.CheckOut)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Member.FirstName) @Html.DisplayFor(modelItem => item.Member.LastName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Trainer.FirstName) @Html.DisplayFor(modelItem => item.Trainer.LastName)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.SessionId" class="btn btn-sm btn-warning">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.SessionId" class="btn btn-sm btn-info">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.SessionId" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

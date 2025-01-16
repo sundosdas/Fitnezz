@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800" rel="stylesheet">
+
+    <!-- CSS Files -->
+    <link href="@Url.Content("~/Assets/css/bootstrap.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Assets/css/animate.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Assets/css/owl.carousel.min.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Assets/css/magnific-popup.css")" rel="stylesheet">
+
+    <!-- Fonts -->
+    <link href="@Url.Content("~/Assets/fonts/ionicons/css/ionicons.min.css")" rel="stylesheet">
+    <link href="@Url.Content("~/Assets/fonts/fontawesome/css/font-awesome.min.css")" rel="stylesheet">
+
+    <!-- Theme Style -->
+    <link href="@Url.Content("~/Assets/css/style.css")" rel="stylesheet">
+</head>
+<body>
+    <!--
+         <header role="banner" class="shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
+            <div class="container">
+                <a class="navbar-brand" href="/">Fitne<span class="text-warning">zz</span></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/plans">Plans</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    -->
+   
+        @RenderBody()
+    
+
+    <!-- Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-md-4 mb-5">
+                    <h3>About Us</h3>
+                    <p class="mb-5">At Fitnezz Gym, we believe that fitness is not just a goal—it is a journey towards a better you. Our mission is to empower individuals to lead healthier, stronger, and more fulfilling lives.</p>
+                    <ul class="list-unstyled footer-link d-flex footer-social">
+                        <li><a href="#" class="p-2"><span class="fa fa-twitter"></span></a></li>
+                        <li><a href="#" class="p-2"><span class="fa fa-facebook"></span></a></li>
+                        <li><a href="#" class="p-2"><span class="fa fa-linkedin"></span></a></li>
+                        <li><a href="#" class="p-2"><span class="fa fa-instagram"></span></a></li>
+                    </ul>
+                </div>
+                <div class="col-md-5 mb-5">
+                    <h3>Contact Info</h3>
+                    <ul class="list-unstyled footer-link">
+                        <li class="d-block"><span>Address:</span> Amman, Dabouq 21 st.</li>
+                        <li><span>Telephone:</span> +962 786193557</li>
+                        <li><span>Email:</span> info@fitnezzgym.com</li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-5">
+                    <h3>Quick Links</h3>
+                    <ul class="list-unstyled footer-link">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Disclaimers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS Files -->
+    <script src="@Url.Content("~/Assets/js/jquery-3.2.1.min.js")"></script>
+    <script src="@Url.Content("~/Assets/js/popper.min.js")"></script>
+    <script src="@Url.Content("~/Assets/js/bootstrap.min.js")"></script>
+    <script src="@Url.Content("~/Assets/js/owl.carousel.min.js")"></script>
+    <script src="@Url.Content("~/Assets/js/jquery.waypoints.min.js")"></script>
+    <script src="@Url.Content("~/Assets/js/jquery.magnific-popup.min.js")"></script>
+    <script src="@Url.Content("~/Assets/js/magnific-popup-options.js")"></script>
+    <script src="@Url.Content("~/Assets/js/main.js")"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

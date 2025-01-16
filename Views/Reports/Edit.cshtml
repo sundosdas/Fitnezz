@@ -1,0 +1,45 @@
+﻿@model gym.Models.Report
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Report</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ReportId" />
+            <div class="form-group">
+                <label asp-for="ReportTitle" class="control-label"></label>
+                <input asp-for="ReportTitle" class="form-control" />
+                <span asp-validation-for="ReportTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReportType" class="control-label"></label>
+                <input asp-for="ReportType" class="form-control" />
+                <span asp-validation-for="ReportType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PdfPath" class="control-label"></label>
+                <input asp-for="PdfPath" class="form-control" />
+                <span asp-validation-for="PdfPath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,60 @@
+﻿@model abUS
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Edit</h1>
+
+<h4>Aboutuspage</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="AbModificationid" />
+            <div class="form-group">
+                <label asp-for="Headertitle" class="control-label"></label>
+                <input asp-for="Headertitle" class="form-control" />
+                <span asp-validation-for="Headertitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Paragraph1" class="control-label"></label>
+                <input asp-for="Paragraph1" class="form-control" />
+                <span asp-validation-for="Paragraph1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Paragraph2" class="control-label"></label>
+                <input asp-for="Paragraph2" class="form-control" />
+                <span asp-validation-for="Paragraph2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Paragraph3" class="control-label"></label>
+                <input asp-for="Paragraph3" class="form-control" />
+                <span asp-validation-for="Paragraph3" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageFile1"></label>
+                <input asp-for="ImageFile1" type="file" class="form-control" />
+                <span asp-validation-for="ImageFile1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageFile2"></label>
+                <input asp-for="ImageFile2" type="file" class="form-control" />
+                <span asp-validation-for="ImageFile2" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,54 @@
+﻿@model IEnumerable<gym.Models.WorkoutPlan>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Details)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Goals)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Member)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Trainer)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Details)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Goals)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Member.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Trainer.UserId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.WorkoutId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.WorkoutId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.WorkoutId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
