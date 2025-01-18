@@ -20,28 +20,62 @@
     <link href="@Url.Content("~/Assets/css/style.css")" rel="stylesheet">
 </head>
 <body>
-    <!--
-         <header role="banner" class="shadow-sm">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary py-3">
+    <header role="banner">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="/">Fitne<span class="text-warning">zz</span></a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" href="@Url.Action("MemberView", "Home")">Fitne<span>zz</span></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
+
+                <div class="collapse navbar-collapse" id="navbarsExample05">
+                    <ul class="navbar-nav mr-auto pl-lg-5 pl-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="@Url.Action("MemberView", "Home")">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("AboutUs", "Home")">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("ContactUs", "Home")">Contact Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Index", "MembershipPlans")">Membership Plans</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Testimonials", "Member")">Testimonials</a>
+                        </li>
+                    </ul>
+
+                    <!-- Member Profile Section -->
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/plans">Plans</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+                        @if (ViewBag.ProfilePicPath != null)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="memberDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img src="@Url.Content(ViewBag.ProfilePicPath)" alt="Member Pic" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover; margin-right: 8px;">
+                                    @ViewBag.MemberName
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="memberDropdown">
+                                    <a class="dropdown-item" href="@Url.Action("Profile", "Home")">Profile</a>
+                                    <form asp-action="Logout" asp-controller="Auth" method="post" class="dropdown-item p-0">
+                                        <button type="submit" class="btn btn-link p-0 text-dark">Logout</button>
+                                    </form>
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item cta-btn">
+                                <a class="nav-link btn btn-primary text-white" href="@Url.Action("Login", "Auth")">Login</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
 
-    -->
-   
         @RenderBody()
     
 

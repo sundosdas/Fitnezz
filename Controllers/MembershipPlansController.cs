@@ -55,10 +55,12 @@ namespace gym.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PlanId,PlanName,PDuration,Price,Details")] MembershipPlan membershipPlan)
+        public async Task<IActionResult> Create([Bind("PlanId,PlanName,PDuration,Price,Details,WorkoutsNum")] MembershipPlan membershipPlan)
         {
             if (ModelState.IsValid)
             {
+                Console.WriteLine("WorkoutsNum: " + membershipPlan.WorkoutsNum);
+
                 _context.Add(membershipPlan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -87,7 +89,7 @@ namespace gym.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(decimal id, [Bind("PlanId,PlanName,PDuration,Price,Details")] MembershipPlan membershipPlan)
+        public async Task<IActionResult> Edit(decimal id, [Bind("PlanId,PlanName,PDuration,Price,Details,WorkoutsNum")] MembershipPlan membershipPlan)
         {
             if (id != membershipPlan.PlanId)
             {

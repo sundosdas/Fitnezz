@@ -25,6 +25,87 @@ namespace FitnessGYM.Controllers
 
         public IActionResult Index()
         {
+            var homepage = _context.Homepages.FirstOrDefault();
+            if (homepage == null)
+            {
+                return NotFound("Homepage content not found.");
+            }
+
+            ViewBag.HomepageContent = new
+            {
+                SliderTitle1 = homepage.Slidertitle1,
+                SliderSubtitle1 = homepage.Slidersubtitle1,
+                SliderImage1 = homepage.Sliderimage1,
+                SliderTitle2 = homepage.Slidertitle2,
+                SliderSubtitle2 = homepage.Slidersubtitle2,
+                SliderImage2 = homepage.Sliderimage2
+            };
+
+            var membershipPlans = _context.MembershipPlans.ToList();
+
+            var plansWithImages = membershipPlans
+                .Select((plan, index) => new
+                {
+                    PlanId = plan.PlanId,
+                    Name = plan.PlanName,
+                    Price = plan.Price,
+                    Workouts=plan.WorkoutsNum,
+                    ImagePath = $"/Assets/img/img_{(index % 4) + 1}_square.jpg"
+                })
+                .ToList();
+
+            ViewBag.Plans = plansWithImages;
+
+            var workouts = _context.WorkoutPlans
+                .Select(w => new
+                {
+                    Name = w.Details,
+                    Goals = w.Goals,
+                    TrainerName = w.Trainer.FirstName + " " + w.Trainer.LastName,
+                    ImagePath = "/Assets/img/img_" + (w.WorkoutId % 4 + 1) + "_square.jpg"
+                })
+                .ToList();
+
+            ViewBag.Workouts = workouts;
+
+            var trainers = _context.Userrs
+                .Where(u => u.RoleId == 2)
+                .Select(t => new
+                {
+                    Name = t.FirstName + " " + t.LastName,
+                    Role = "Gym Trainer",
+                    ImagePath = t.PicPath ?? "~/Assets/img/default-trainer.jpg"
+                })
+                .ToList();
+
+            ViewBag.Trainers = trainers;
+            var testimonials = _context.Testimonials
+                  .Include(t => t.User)
+                  .Where(t => t.IsApproved == "Approved")
+                  .Select(t => new
+                  {
+                      Content = t.TContent,
+                      SubmittedAt = t.SubmittedAt,
+                      AuthorName = t.User.FirstName + " " + t.User.LastName,
+                      AuthorImage = t.User.PicPath ?? "/Assets/img/default-user.jpg"
+                  })
+                  .ToList();
+
+            ViewBag.Testimonials = testimonials;
+
+            var reviews = _context.Reviews
+                    .Select(r => new
+                    {
+                        ReviewId = r.ReviewId,
+                        FeedbackText = r.FeedbackText.Length > 100 ? r.FeedbackText.Substring(0, 100) + "..." : r.FeedbackText,
+                        FullFeedbackText = r.FeedbackText,
+                        Rating = r.Rating ?? 0, // Default to 0 if rating is null
+                        SubmittedAt = r.SubmittedAt.HasValue ? r.SubmittedAt.Value.ToString("MMMM dd, yyyy") : "Unknown Date"
+                    })
+                    .ToList();
+
+            ViewBag.Reviews = reviews;
+
             return View();
         }
 
@@ -84,12 +165,12 @@ namespace FitnessGYM.Controllers
                     Status = t.IsApproved
                 }).ToList();
 
-
+         
 
             return View();
 
         }
-
+      
         [HttpGet]
         public IActionResult Search()
         {
@@ -354,20 +435,63 @@ namespace FitnessGYM.Controllers
                     PlanId = plan.PlanId,
                     Name = plan.PlanName,
                     Price = plan.Price,
-                    ImagePath = $"~Assets/images/img_{(index % 4) + 1}_square.jpg" 
+                    Workouts = plan.WorkoutsNum,
+                    ImagePath = $"/Assets/img/img_{(index % 4) + 1}_square.jpg" 
                 })
                 .ToList();
 
-            ViewBag.Plans = plansWithImages; 
+            ViewBag.Plans = plansWithImages;
 
-
-            ViewBag.Testimonials = _context.Testimonials
-                .Include(t => t.User)
-                .Where(t => t.IsApproved == "Yes")
+            var workouts = _context.WorkoutPlans
+                .Select(w => new
+                {
+                    Name = w.Details,
+                    Goals = w.Goals,
+                    TrainerName = w.Trainer.FirstName + " " + w.Trainer.LastName,
+                    ImagePath = "/Assets/img/img_" + (w.WorkoutId % 4 + 1) + "_square.jpg"
+                })
                 .ToList();
 
+            ViewBag.Workouts = workouts;
 
-            
+            var trainers = _context.Userrs
+                .Where(u => u.RoleId == 2)
+                .Select(t => new
+                {
+                    Name = t.FirstName + " " + t.LastName,
+                    Role = "Gym Trainer",
+                    ImagePath = t.PicPath ?? "~/Assets/img/default-trainer.jpg"
+                })
+                .ToList();
+
+            ViewBag.Trainers = trainers;
+            var testimonials = _context.Testimonials
+                  .Include(t => t.User) 
+                  .Where(t => t.IsApproved == "Approved")
+                  .Select(t => new
+                  {
+                      Content = t.TContent,
+                      SubmittedAt = t.SubmittedAt,
+                      AuthorName = t.User.FirstName + " " + t.User.LastName,
+                      AuthorImage = t.User.PicPath ?? "/Assets/img/default-user.jpg"
+                  })
+                  .ToList();
+
+            ViewBag.Testimonials = testimonials;
+
+            var reviews = _context.Reviews
+                    .Select(r => new
+                    {
+                        ReviewId = r.ReviewId,
+                        FeedbackText = r.FeedbackText.Length > 100 ? r.FeedbackText.Substring(0, 100) + "..." : r.FeedbackText,
+                        FullFeedbackText = r.FeedbackText,
+                        Rating = r.Rating ?? 0, // Default to 0 if rating is null
+                        SubmittedAt = r.SubmittedAt.HasValue ? r.SubmittedAt.Value.ToString("MMMM dd, yyyy") : "Unknown Date"
+                    })
+                    .ToList();
+
+            ViewBag.Reviews = reviews;
+
             return View();
         }
 

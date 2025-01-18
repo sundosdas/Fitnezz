@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace gym.Models;
 
@@ -15,5 +17,6 @@ public partial class MembershipPlan
 
     public string? Details { get; set; }
 
+    public int? WorkoutsNum { get; set; } = 1;
     public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
 }

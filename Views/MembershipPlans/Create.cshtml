@@ -34,6 +34,11 @@
                 <span asp-validation-for="Details" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="WorkoutsNum" class="control-label">Number of Workouts</label>
+                <input asp-for="WorkoutsNum" class="form-control" />
+                <span asp-validation-for="WorkoutsNum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
