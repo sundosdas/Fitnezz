@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using gym.Models;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace gym.Controllers
 {
@@ -48,8 +49,13 @@ namespace gym.Controllers
         // GET: WorkoutPlans/Create
         public IActionResult Create()
         {
-            ViewData["MemberId"] = new SelectList(_context.Userrs, "UserId", "UserId");
-            ViewData["TrainerId"] = new SelectList(_context.Userrs, "UserId", "UserId");
+            var trainerId = HttpContext.Session.GetInt32("UserId"); // Retrieve TrainerId from session
+            if (trainerId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            ViewData["MemberId"] = new SelectList(_context.Userrs.Where(u => u.RoleId == 3), "UserId", "FirstName"); // Only members
             return View();
         }
 
@@ -58,35 +64,63 @@ namespace gym.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("WorkoutId,TrainerId,MemberId,Details,Goals")] WorkoutPlan workoutPlan)
+        public async Task<IActionResult> Create(WPform wpForm)
         {
+            var trainerId = HttpContext.Session.GetInt32("UserId"); // Retrieve TrainerId from session
+            if (trainerId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
             if (ModelState.IsValid)
             {
+                var workoutPlan = new WorkoutPlan
+                {
+                    TrainerId = (decimal)trainerId, // Set TrainerId from session
+                    MemberId = wpForm.MemberId,
+                    Details = wpForm.Details,
+                    Goals = wpForm.Goals
+                };
+
                 _context.Add(workoutPlan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MemberId"] = new SelectList(_context.Userrs, "UserId", "UserId", workoutPlan.MemberId);
-            ViewData["TrainerId"] = new SelectList(_context.Userrs, "UserId", "UserId", workoutPlan.TrainerId);
-            return View(workoutPlan);
+
+            ViewData["MemberId"] = new SelectList(_context.Userrs.Where(u => u.RoleId == 3), "UserId", "FirstName", wpForm.MemberId);
+            return View(wpForm);
         }
 
         // GET: WorkoutPlans/Edit/5
         public async Task<IActionResult> Edit(decimal? id)
         {
-            if (id == null || _context.WorkoutPlans == null)
+            var trainerId = HttpContext.Session.GetInt32("UserId"); // Retrieve TrainerId from session
+            if (trainerId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (id == null)
             {
                 return NotFound();
             }
 
             var workoutPlan = await _context.WorkoutPlans.FindAsync(id);
-            if (workoutPlan == null)
+            if (workoutPlan == null || workoutPlan.TrainerId != trainerId) // Ensure ownership
             {
-                return NotFound();
+                return Unauthorized();
             }
-            ViewData["MemberId"] = new SelectList(_context.Userrs, "UserId", "UserId", workoutPlan.MemberId);
-            ViewData["TrainerId"] = new SelectList(_context.Userrs, "UserId", "UserId", workoutPlan.TrainerId);
-            return View(workoutPlan);
+
+            var wpForm = new WPform
+            {
+                WorkoutId = workoutPlan.WorkoutId,
+                MemberId = workoutPlan.MemberId,
+                Details = workoutPlan.Details,
+                Goals = workoutPlan.Goals
+            };
+
+            ViewData["MemberId"] = new SelectList(_context.Userrs.Where(u => u.RoleId == 3), "UserId", "FirstName", wpForm.MemberId);
+            return View(wpForm);
         }
 
         // POST: WorkoutPlans/Edit/5
@@ -94,15 +128,31 @@ namespace gym.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(decimal id, [Bind("WorkoutId,TrainerId,MemberId,Details,Goals")] WorkoutPlan workoutPlan)
+        public async Task<IActionResult> Edit(decimal id, WPform wpForm)
         {
-            if (id != workoutPlan.WorkoutId)
+            var trainerId = HttpContext.Session.GetInt32("UserId"); // Retrieve TrainerId from session
+            if (trainerId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (id != wpForm.WorkoutId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var workoutPlan = await _context.WorkoutPlans.FindAsync(id);
+                if (workoutPlan == null || workoutPlan.TrainerId != trainerId) // Ensure ownership
+                {
+                    return Unauthorized();
+                }
+
+                workoutPlan.MemberId = wpForm.MemberId;
+                workoutPlan.Details = wpForm.Details;
+                workoutPlan.Goals = wpForm.Goals;
+
                 try
                 {
                     _context.Update(workoutPlan);
@@ -110,7 +160,7 @@ namespace gym.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!WorkoutPlanExists(workoutPlan.WorkoutId))
+                    if (!WorkoutPlanExists(wpForm.WorkoutId))
                     {
                         return NotFound();
                     }
@@ -121,10 +171,11 @@ namespace gym.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MemberId"] = new SelectList(_context.Userrs, "UserId", "UserId", workoutPlan.MemberId);
-            ViewData["TrainerId"] = new SelectList(_context.Userrs, "UserId", "UserId", workoutPlan.TrainerId);
-            return View(workoutPlan);
+
+            ViewData["MemberId"] = new SelectList(_context.Userrs.Where(u => u.RoleId == 3), "UserId", "FirstName", wpForm.MemberId);
+            return View(wpForm);
         }
+
 
         // GET: WorkoutPlans/Delete/5
         public async Task<IActionResult> Delete(decimal? id)

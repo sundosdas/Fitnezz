@@ -22,7 +22,35 @@ namespace FitnessGYM.Controllers
             _context = context;
             _webHostEnvironment = webHostEnvironment;
         }
+        // About Us Action
+        public IActionResult AboutUs()
+        {
+            // Fetch the About Us content from the database
+            var aboutUsData = _context.Aboutuspages.FirstOrDefault();
+            if (aboutUsData == null)
+            {
+                // Return a default message if no data exists
+                ViewBag.ErrorMessage = "About Us information is not available.";
+                return View();
+            }
 
+            return View(aboutUsData); // Pass the Aboutuspage model to the view
+        }
+
+        // Contact Us Action
+        public IActionResult ContactUs()
+        {
+            // Fetch the Contact Us content from the database
+            var contactUsData = _context.Contactuspages.FirstOrDefault();
+            if (contactUsData == null)
+            {
+                // Return a default message if no data exists
+                ViewBag.ErrorMessage = "Contact information is not available.";
+                return View();
+            }
+
+            return View(contactUsData); // Pass the Contactuspage model to the view
+        }
         public IActionResult Index()
         {
             var homepage = _context.Homepages.FirstOrDefault();
@@ -352,7 +380,6 @@ namespace FitnessGYM.Controllers
             return RedirectToAction("Profile"); // Redirect to profile page
         }
 
-
         [HttpPost]
         public IActionResult ApproveItem(int id)
         {
@@ -382,15 +409,58 @@ namespace FitnessGYM.Controllers
 
         public IActionResult TrainerView()
         {
-            var firstName = HttpContext.Session.GetString("FirstName");
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
+            var trainerId = HttpContext.Session.GetInt32("UserId");
+            if (trainerId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
-            ViewBag.FirstName = firstName;
+
+            // Verify trainer
+            var trainer = _context.Userrs.FirstOrDefault(u => u.UserId == trainerId && u.RoleId == 2);
+            if (trainer == null)
+            {
+                return Unauthorized();
+            }
+
+            ViewBag.FirstName = trainer.FirstName;
+            ViewBag.ProfilePicPath = trainer.PicPath ?? "~/AdminAssets/images/faces/default-avatar.jpg";
+
+            // Members
+            ViewBag.Members = _context.WorkoutPlans
+                .Where(w => w.TrainerId == trainerId)
+                .Select(w => w.Member)
+                .Distinct()
+                .Select(m => new { m.UserId, FullName = m.FirstName + " " + m.LastName, m.Email, m.Phone })
+                .ToList();
+
+            // Workout Plans
+            ViewBag.WorkoutPlans = _context.WorkoutPlans
+                .Where(w => w.TrainerId == trainerId)
+                .Select(w => new { w.WorkoutId, MemberName = w.Member.FirstName + " " + w.Member.LastName, w.Goals, w.Details })
+                .ToList();
+
+            // Schedule
+            ViewBag.Schedule = _context.Schedules
+                .Where(s => s.TrainerId == trainerId)
+                .Select(s => new { s.DayOfWeek, s.AvailableFrom, s.AvailableTo })
+                .ToList();
+            // Sessions
+            ViewBag.Sessions = _context.Sessions
+               .Where(s => s.TrainerId == trainerId)
+               .Include(s => s.Member)
+               .Select(s => new
+               {
+                   s.SessionId,
+                   MemberName = s.Member.FirstName + " " + s.Member.LastName,
+                   s.StartTime,
+                   s.EndTime,
+                   s.Status
+               })
+               .ToList();
             return View();
         }
+
+
 
         public IActionResult MemberView()
         {
@@ -510,9 +580,184 @@ namespace FitnessGYM.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult MemberProfile()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var user = _context.Userrs
+                .Include(u => u.Subscriptions)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var viewModel = new MemberPro
+            {
+                User = user,
+                Subscriptions = _context.Subscriptions
+                 .Include(s => s.Plan)
+                 .Where(s => s.UserId == userId)
+                 .OrderByDescending(s => s.StartDate)
+                 .ToList(),
+                Workouts = _context.WorkoutPlans
+                .Where(w => w.MemberId == userId) // Filter by MemberId
+                .ToList(),
+                Sessions = _context.Sessions
+                 .Where(s => s.MemberId == userId)
+                 .OrderByDescending(s => s.StartTime)
+                 .ToList(),
+                Testimonials = _context.Testimonials
+                 .Where(t => t.UserId == userId)
+                 .ToList(),
+                Reviews = _context.Reviews
+                 .Include(r => r.Session)
+                 .Where(r => r.Session != null && r.Session.MemberId == userId)
+                 .ToList()
+                    };
 
 
+            return View(viewModel);
 
+        }
+        [HttpPost]
+        public async Task<IActionResult> CheckIn(int sessionId)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth"); // Redirect to login if the user is not authenticated
+            }
+
+            // Fetch the session
+            var session = await _context.Sessions.FirstOrDefaultAsync(s => s.SessionId == sessionId && s.MemberId == userId);
+
+            if (session != null && session.Status == "Scheduled" && session.StartTime <= DateTime.Now)
+            {
+                session.CheckIn = DateTime.Now; // Set the current check-in time
+                session.Status = "Completed"; // Update the status to Completed
+                _context.Update(session);
+                await _context.SaveChangesAsync();
+            }
+            else if (session != null && session.Status == "Scheduled" && session.StartTime > DateTime.Now)
+            {
+                // Optional: Add logic to prevent check-in for sessions in the future if needed
+                return BadRequest("You cannot check in for a session that is not started yet.");
+            }
+            else if (session == null)
+            {
+                return NotFound("Session not found or does not belong to the logged-in user.");
+            }
+
+            return RedirectToAction(nameof(MemberProfile));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CheckOut(int sessionId)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth"); // Redirect if the user is not authenticated
+            }
+
+            // Fetch the session
+            var session = await _context.Sessions.FirstOrDefaultAsync(s => s.SessionId == sessionId && s.MemberId == userId);
+
+            if (session != null && session.CheckIn != null && session.Status == "Completed")
+            {
+                session.CheckOut = DateTime.Now; // Set the current check-out time
+                _context.Update(session);
+                await _context.SaveChangesAsync();
+            }
+            else if (session == null || session.CheckIn == null)
+            {
+                return NotFound("Session not found, or you have not checked in for this session.");
+            }
+
+            return RedirectToAction(nameof(MemberProfile));
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubmitTestimonial(string TContent)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (string.IsNullOrWhiteSpace(TContent))
+            {
+                ModelState.AddModelError("TContent", "Testimonial content cannot be empty.");
+                return RedirectToAction("MemberProfile"); // Redirect back to the member profile
+            }
+
+            var testimonial = new Testimonial
+            {
+                UserId = userId.Value,
+                TContent = TContent,
+                IsApproved = "Pending", // Default to pending approval
+                SubmittedAt = DateTime.Now
+            };
+
+            try
+            {
+                _context.Testimonials.Add(testimonial);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Thank you for submitting your testimonial!";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "There was an error submitting your testimonial.";
+                // Optionally log the exception here
+            }
+
+            return RedirectToAction("MemberProfile");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitReview(decimal sessionId, string feedbackText, int rating)
+        {
+            // Validate the user's session
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth"); // Redirect to login if no session exists
+            }
+
+            // Check if the session belongs to the logged-in user
+            var session = await _context.Sessions
+                .Include(s => s.Member)
+                .FirstOrDefaultAsync(s => s.SessionId == sessionId && s.MemberId == userId.Value);
+
+            if (session == null)
+            {
+                return Unauthorized(); // Prevent unauthorized access
+            }
+
+            // Create the review
+            var review = new Review
+            {
+                SessionId = sessionId,
+                FeedbackText = feedbackText,
+                Rating = rating,
+                SubmittedAt = DateTime.Now
+            };
+
+            _context.Reviews.Add(review);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(MemberProfile));
+        }
 
     }
 }

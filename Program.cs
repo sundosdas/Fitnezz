@@ -1,9 +1,24 @@
 using gym.Models;
 using Microsoft.EntityFrameworkCore;
+using DinkToPdf.Contracts;
+using DinkToPdf;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+builder.Services.AddTransient(sp =>
+{
+    var config = sp.GetService<IConfiguration>();
+    var emailSettings = config.GetSection("EmailSettings");
+    return new EmailService(
+        emailSettings["SmtpServer"],
+        int.Parse(emailSettings["Port"]),
+        emailSettings["SenderEmail"],
+        emailSettings["Password"]
+    );
+});
+
 builder.Services.AddDbContext<ModelContext>(options => options.UseOracle(builder.Configuration.GetConnectionString("GYMConnection")));
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options => {

@@ -39,6 +39,8 @@ public partial class ModelContext : DbContext
 
     public virtual DbSet<Subscription> Subscriptions { get; set; }
 
+    public DbSet<SubscriptionWorkout> SubscriptionWorkouts { get; set; }
+
     public virtual DbSet<Testimonial> Testimonials { get; set; }
 
     public virtual DbSet<UserLogin> UserLogins { get; set; }
@@ -464,6 +466,35 @@ public partial class ModelContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("SYS_C008453");
         });
+
+        modelBuilder.Entity<SubscriptionWorkout>(entity =>
+        {
+            entity.HasKey(e => new { e.SubscriptionId, e.WorkoutId })
+                .HasName("SYS_C_SUBSCRIPTION_WORKOUT_PK");
+
+            entity.ToTable("SUBSCRIPTION_WORKOUTS");
+
+            entity.Property(e => e.SubscriptionId)
+                .HasColumnType("NUMBER(38)") // Matches the database type
+                .HasColumnName("SUBSCRIPTION_ID");
+
+            entity.Property(e => e.WorkoutId)
+                .HasColumnType("NUMBER(38)") // Matches the database type
+                .HasColumnName("WORKOUT_ID");
+
+            entity.HasOne(d => d.Subscription)
+                .WithMany(p => p.SubscriptionWorkouts)
+                .HasForeignKey(d => d.SubscriptionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SUBSCRIPTION_WORKOUT_SUBSCRIPTION");
+
+            entity.HasOne(d => d.Workout)
+                .WithMany(p => p.SubscriptionWorkouts)
+                .HasForeignKey(d => d.WorkoutId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SUBSCRIPTION_WORKOUT_WORKOUT");
+        });
+
 
         modelBuilder.Entity<Testimonial>(entity =>
         {

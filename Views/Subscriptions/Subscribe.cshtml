@@ -1,0 +1,205 @@
+﻿@model gym.Models.SubscriptionForm
+
+@{
+    ViewData["Title"] = "Subscribe to a Plan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<header role="banner" style="margin-block:revert-layer">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">Fitne<span>zz</span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarsExample05">
+                <ul class="navbar-nav mr-auto pl-lg-5 pl-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="@Url.Action("MemberView", "Home")">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("AboutUs", "Home")">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("ContactUs", "Home")">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "MembershipPlans")">Membership Plans</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Testimonials", "Member")">Testimonials</a>
+                    </li>
+                </ul>
+
+                <!-- Profile Section -->
+                <ul class="navbar-nav ml-auto">
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container my-5">
+    <h1 class="text-center mb-4">Subscribe to a Membership Plan</h1>
+
+    <!-- Membership Plans Section -->
+    <section>
+        <h2 class="text-center mb-4">Featured Membership Plans</h2>
+        <div class="row">
+            @foreach (var plan in ViewBag.Plans)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@plan.Name</h5>
+                            <p class="card-text">$@plan.Price</p>
+                            <button class="btn btn-primary select-plan-btn"
+                                    data-planid="@plan.PlanId"
+                                    data-workoutnums="@plan.Workouts"
+                                    data-duration="@plan.Duration">
+                                Select Plan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <hr class="my-5">
+
+    <!-- Workouts Section -->
+    <section id="workouts-section" class="d-none">
+        <h2 class="text-center mb-4">Available Workouts</h2>
+        <div class="row">
+            @foreach (var workout in ViewBag.Workouts)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@workout.Name</h5>
+                            <p class="card-text">@workout.Goals</p>
+                            <div class="form-check">
+                                <input class="form-check-input workout-checkbox"
+                                       type="checkbox"
+                                       value="@workout.WorkoutId"
+                                       disabled />
+                                <label class="form-check-label">@workout.Name</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <hr class="my-5">
+
+    <!-- Subscription Form -->
+    <form asp-action="Subscribe" method="post">
+        <input type="hidden" name="UserId" value="@ViewBag.UserId" />
+        <input type="hidden" id="SelectedPlanId" name="PlanId" />
+
+        <!-- Start Date -->
+        <div class="form-group d-none" id="start-date-section">
+            <label for="StartDate">Start Date</label>
+            <input type="date" id="StartDate" name="StartDate" class="form-control" required />
+        </div>
+
+        <!-- End Date -->
+        <div class="form-group d-none" id="end-date-section">
+            <label for="EndDate">End Date</label>
+            <input type="text" id="EndDate" name="EndDate" class="form-control" readonly />
+        </div>
+
+        <!-- Selected Workouts -->
+        <div id="workout-input-section" class="form-group d-none">
+            <label for="SelectedWorkouts">Selected Workouts</label>
+            <div id="workout-selection" class="d-flex flex-wrap"></div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-success mt-4 d-none" id="subscribe-btn">Subscribe</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const planButtons = document.querySelectorAll(".select-plan-btn");
+            const workoutsSection = document.getElementById("workouts-section");
+            const startDateSection = document.getElementById("start-date-section");
+            const endDateSection = document.getElementById("end-date-section");
+            const subscribeBtn = document.getElementById("subscribe-btn");
+            const selectedPlanIdInput = document.getElementById("SelectedPlanId");
+            const workoutCheckboxes = document.querySelectorAll(".workout-checkbox");
+            const startDateInput = document.getElementById("StartDate");
+            const endDateInput = document.getElementById("EndDate");
+
+            // Attach event listeners to plan buttons
+            planButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    const planId = this.dataset.planid;
+                    const workoutNums = parseInt(this.dataset.workoutnums);
+                    const duration = parseInt(this.dataset.duration);
+
+                    // Validate the data
+                    if (!planId || !workoutNums || !duration) {
+                        alert("Plan information is incomplete. Please refresh the page.");
+                        return;
+                    }
+
+                    // Set selected plan ID
+                    selectedPlanIdInput.value = planId;
+
+                    // Show Sections
+                    workoutsSection.classList.remove("d-none");
+                    startDateSection.classList.remove("d-none");
+                    endDateSection.classList.remove("d-none");
+                    subscribeBtn.classList.remove("d-none");
+
+                    // Enable or disable workout checkboxes
+                    let enabledCount = 0;
+                    workoutCheckboxes.forEach((checkbox) => {
+                        if (enabledCount < workoutNums) {
+                            checkbox.disabled = false;
+                            enabledCount++;
+                        } else {
+                            checkbox.disabled = true;
+                            checkbox.checked = false;
+                        }
+                    });
+
+                    // Attach duration for end date calculation
+                    startDateInput.dataset.duration = duration;
+                });
+            });
+
+            // Attach change event to start date
+            startDateInput.addEventListener("change", calculateEndDate);
+
+            // Function to calculate end date
+            function calculateEndDate() {
+                const duration = parseInt(startDateInput.dataset.duration);
+                const startDateValue = startDateInput.value;
+
+                if (startDateValue && duration) {
+                    const startDate = new Date(startDateValue);
+
+                    // Calculate the end date based on duration
+                    if (duration < 30) {
+                        startDate.setDate(startDate.getDate() + duration); // Add days
+                    } else {
+                        startDate.setMonth(startDate.getMonth() + Math.floor(duration / 30)); // Add months
+                    }
+
+                    // Format and set the end date
+                    endDateInput.value = startDate.toISOString().split("T")[0];
+                } else {
+                    endDateInput.value = '';
+                }
+            }
+        });
+    </script>
+}

@@ -15,9 +15,12 @@ public partial class Subscription
 
     public DateTime EndDate { get; set; }
 
-    public string InvoicePath { get; set; } = null!;
+    public string? InvoicePath { get; set; } = null!;
 
     public virtual MembershipPlan Plan { get; set; } = null!;
 
     public virtual Userr User { get; set; } = null!;
+
+    public virtual ICollection<SubscriptionWorkout> SubscriptionWorkouts { get; set; }
+
 }

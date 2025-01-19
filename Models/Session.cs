@@ -11,9 +11,9 @@ public partial class Session
 
     public decimal TrainerId { get; set; }
 
-    public DateTime StartTime { get; set; }
+    public DateTime? StartTime { get; set; }
 
-    public DateTime EndTime { get; set; }
+    public DateTime? EndTime { get; set; }
 
     public DateTime? CheckIn { get; set; }
 

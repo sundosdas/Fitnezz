@@ -1,49 +1,71 @@
 ﻿@model gym.Models.MembershipPlan
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Membership Plan Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<header role="banner" style="margin-block:revert-layer">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">Fitne<span>zz</span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-<div>
-    <h4>MembershipPlan</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PlanName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PlanName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PDuration)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PDuration)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Details)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Details)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.WorkoutsNum)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.WorkoutsNum)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.PlanId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+            <div class="collapse navbar-collapse" id="navbarsExample05">
+                <ul class="navbar-nav mr-auto pl-lg-5 pl-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="@Url.Action("MemberView", "Home")">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("AboutUs", "Home")">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("ContactUs", "Home")">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "MembershipPlans")">Membership Plans</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Testimonials", "Member")">Testimonials</a>
+                    </li>
+                </ul>
+
+                <!-- Profile Section -->
+                <ul class="navbar-nav ml-auto">
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container mt-4">
+    <h1 class="text-center text-primary mb-4">Membership Plan Details</h1>
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h4>@Model.PlanName</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3 font-weight-bold text-secondary">Plan Name:</dt>
+                <dd class="col-sm-9">@Model.PlanName</dd>
+
+                <dt class="col-sm-3 font-weight-bold text-secondary">Duration (in months):</dt>
+                <dd class="col-sm-9">@Model.PDuration</dd>
+
+                <dt class="col-sm-3 font-weight-bold text-secondary">Price:</dt>
+                <dd class="col-sm-9">$@Model.Price</dd>
+
+                <dt class="col-sm-3 font-weight-bold text-secondary">Details:</dt>
+                <dd class="col-sm-9">@Model.Details</dd>
+
+                <dt class="col-sm-3 font-weight-bold text-secondary">Workouts Allowed:</dt>
+                <dd class="col-sm-9">@Model.WorkoutsNum</dd>
+            </dl>
+        </div>
+        <div class="card-footer text-right">
+            <a asp-action="Edit" asp-route-id="@Model?.PlanId" class="btn btn-warning">Edit</a>
+            <a asp-action="Create" asp-controller="Subscription" asp-route-planId="@Model.PlanId" class="btn btn-success">Subscribe Now </a>
+        </div>
+    </div>
 </div>

@@ -18,4 +18,6 @@ public partial class WorkoutPlan
     public virtual Userr Member { get; set; } = null!;
 
     public virtual Userr Trainer { get; set; } = null!;
+    public virtual ICollection<SubscriptionWorkout> SubscriptionWorkouts { get; set; }
+
 }

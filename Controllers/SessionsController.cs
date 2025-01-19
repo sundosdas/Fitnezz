@@ -48,33 +48,55 @@ namespace gym.Controllers
         // GET: Sessions/Create
         public IActionResult Create()
         {
-            ViewData["MemberId"] = new SelectList(_context.Userrs, "UserId", "UserId");
-            ViewData["TrainerId"] = new SelectList(_context.Userrs, "UserId", "UserId");
-            return View();
+            var trainerId = HttpContext.Session.GetInt32("UserId");
+            if (trainerId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            ViewData["MemberId"] = new SelectList(_context.Userrs.Where(u => u.RoleId == 3), "UserId", "FirstName");
+            return View(new SessionForm { TrainerId = trainerId.Value });
         }
+
 
         // POST: Sessions/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Sessions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SessionId,MemberId,TrainerId,StartTime,EndTime,CheckIn,CheckOut,Status")] Session session)
+        public async Task<IActionResult> Create(SessionForm form)
         {
+            var trainerId = HttpContext.Session.GetInt32("UserId");
+            if (trainerId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
             if (ModelState.IsValid)
             {
-                _context.Add(session);
+                var session = new Session
+                {
+                    MemberId = form.MemberId,
+                    TrainerId = trainerId.Value,
+                    StartTime = form.StartTime ?? DateTime.Now, // Default to now if not specified
+                    Status = form.Status ?? "Scheduled"
+                };
+
+                _context.Sessions.Add(session);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MemberId"] = new SelectList(_context.Userrs, "UserId", "UserId", session.MemberId);
-            ViewData["TrainerId"] = new SelectList(_context.Userrs, "UserId", "UserId", session.TrainerId);
-            return View(session);
+
+            // Repopulate dropdowns in case of validation errors
+            ViewData["MemberId"] = new SelectList(_context.Userrs.Where(u => u.RoleId == 3), "UserId", "FirstName", form.MemberId);
+            return View(form);
         }
 
         // GET: Sessions/Edit/5
         public async Task<IActionResult> Edit(decimal? id)
         {
-            if (id == null || _context.Sessions == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -84,25 +106,55 @@ namespace gym.Controllers
             {
                 return NotFound();
             }
-            ViewData["MemberId"] = new SelectList(_context.Userrs, "UserId", "UserId", session.MemberId);
-            ViewData["TrainerId"] = new SelectList(_context.Userrs, "UserId", "UserId", session.TrainerId);
-            return View(session);
+
+            var form = new SessionForm
+            {
+                SessionId = session.SessionId,
+                MemberId = session.MemberId,
+                TrainerId = session.TrainerId,
+                StartTime = session.StartTime,
+                EndTime = session.EndTime,
+                Status = session.Status
+            };
+
+            ViewData["MemberId"] = new SelectList(_context.Userrs.Where(u => u.RoleId == 3), "UserId", "FirstName", session.MemberId);
+
+            return View(form);
         }
 
         // POST: Sessions/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Sessions/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(decimal id, [Bind("SessionId,MemberId,TrainerId,StartTime,EndTime,CheckIn,CheckOut,Status")] Session session)
+        public async Task<IActionResult> Edit(decimal id, SessionForm form)
         {
-            if (id != session.SessionId)
+            var trainerId = HttpContext.Session.GetInt32("UserId");
+            if (trainerId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (id != form.SessionId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var session = await _context.Sessions.FindAsync(id);
+                if (session == null)
+                {
+                    return NotFound();
+                }
+
+                session.MemberId = form.MemberId;
+                session.TrainerId = trainerId.Value;
+                session.StartTime = form.StartTime ?? session.StartTime;
+                session.EndTime = form.EndTime ?? session.EndTime;
+                session.Status = form.Status ?? session.Status;
+
                 try
                 {
                     _context.Update(session);
@@ -110,7 +162,7 @@ namespace gym.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SessionExists(session.SessionId))
+                    if (!_context.Sessions.Any(e => e.SessionId == id))
                     {
                         return NotFound();
                     }
@@ -119,11 +171,12 @@ namespace gym.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MemberId"] = new SelectList(_context.Userrs, "UserId", "UserId", session.MemberId);
-            ViewData["TrainerId"] = new SelectList(_context.Userrs, "UserId", "UserId", session.TrainerId);
-            return View(session);
+
+            ViewData["MemberId"] = new SelectList(_context.Userrs.Where(u => u.RoleId == 3), "UserId", "FirstName", form.MemberId);
+            return View(form);
         }
 
         // GET: Sessions/Delete/5

@@ -24,6 +24,24 @@ namespace gym.Migrations
 
             OracleModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SubscriptionWorkout", b =>
+                {
+                    b.Property<decimal>("SubscriptionId")
+                        .HasColumnType("NUMBER(38)")
+                        .HasColumnName("SUBSCRIPTION_ID");
+
+                    b.Property<decimal>("WorkoutId")
+                        .HasColumnType("NUMBER(38)")
+                        .HasColumnName("WORKOUT_ID");
+
+                    b.HasKey("SubscriptionId", "WorkoutId")
+                        .HasName("SYS_C_SUBSCRIPTION_WORKOUT_PK");
+
+                    b.HasIndex("WorkoutId");
+
+                    b.ToTable("SUBSCRIPTION_WORKOUTS", "C##SUNDOS");
+                });
+
             modelBuilder.Entity("gym.Models.Aboutuspage", b =>
                 {
                     b.Property<decimal>("AbModificationid")
@@ -762,6 +780,25 @@ namespace gym.Migrations
                     b.ToTable("WORKOUT_PLANS", "C##SUNDOS");
                 });
 
+            modelBuilder.Entity("SubscriptionWorkout", b =>
+                {
+                    b.HasOne("gym.Models.Subscription", "Subscription")
+                        .WithMany("SubscriptionWorkouts")
+                        .HasForeignKey("SubscriptionId")
+                        .IsRequired()
+                        .HasConstraintName("FK_SUBSCRIPTION_WORKOUT_SUBSCRIPTION");
+
+                    b.HasOne("gym.Models.WorkoutPlan", "Workout")
+                        .WithMany("SubscriptionWorkouts")
+                        .HasForeignKey("WorkoutId")
+                        .IsRequired()
+                        .HasConstraintName("FK_SUBSCRIPTION_WORKOUT_WORKOUT");
+
+                    b.Navigation("Subscription");
+
+                    b.Navigation("Workout");
+                });
+
             modelBuilder.Entity("gym.Models.Aboutuspage", b =>
                 {
                     b.HasOne("gym.Models.Userr", "Admin")
@@ -934,6 +971,11 @@ namespace gym.Migrations
                     b.Navigation("Schedules");
                 });
 
+            modelBuilder.Entity("gym.Models.Subscription", b =>
+                {
+                    b.Navigation("SubscriptionWorkouts");
+                });
+
             modelBuilder.Entity("gym.Models.Userr", b =>
                 {
                     b.Navigation("Aboutuspages");
@@ -957,6 +999,11 @@ namespace gym.Migrations
                     b.Navigation("WorkoutPlanMembers");
 
                     b.Navigation("WorkoutPlanTrainers");
+                });
+
+            modelBuilder.Entity("gym.Models.WorkoutPlan", b =>
+                {
+                    b.Navigation("SubscriptionWorkouts");
                 });
 #pragma warning restore 612, 618
         }

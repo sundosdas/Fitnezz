@@ -48,61 +48,114 @@ namespace gym.Controllers
         // GET: Schedules/Create
         public IActionResult Create()
         {
+            var trainerId = HttpContext.Session.GetInt32("UserId"); 
+            if (trainerId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
             ViewData["SessionId"] = new SelectList(_context.Sessions, "SessionId", "SessionId");
-            ViewData["TrainerId"] = new SelectList(_context.Userrs, "UserId", "UserId");
             return View();
         }
-
         // POST: Schedules/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ScheduleId,TrainerId,AvailableFrom,AvailableTo,SessionId,DayOfWeek")] Schedule schedule)
+        public async Task<IActionResult> Create(ScheduleForm scheduleForm)
         {
+            var trainerId = HttpContext.Session.GetInt32("UserId"); 
+            if (trainerId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
             if (ModelState.IsValid)
             {
+                var schedule = new Schedule
+                {
+                    TrainerId = (decimal)trainerId, 
+                    AvailableFrom = scheduleForm.AvailableFrom,
+                    AvailableTo = scheduleForm.AvailableTo,
+                    SessionId = scheduleForm.SessionId,
+                    DayOfWeek = scheduleForm.DayOfWeek
+                };
+
                 _context.Add(schedule);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SessionId"] = new SelectList(_context.Sessions, "SessionId", "SessionId", schedule.SessionId);
-            ViewData["TrainerId"] = new SelectList(_context.Userrs, "UserId", "UserId", schedule.TrainerId);
-            return View(schedule);
+
+            ViewData["SessionId"] = new SelectList(_context.Sessions, "SessionId", "SessionId", scheduleForm.SessionId);
+            return View(scheduleForm);
         }
 
         // GET: Schedules/Edit/5
         public async Task<IActionResult> Edit(decimal? id)
         {
-            if (id == null || _context.Schedules == null)
+            var trainerId = HttpContext.Session.GetInt32("UserId"); 
+            if (trainerId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (id == null)
             {
                 return NotFound();
             }
 
             var schedule = await _context.Schedules.FindAsync(id);
-            if (schedule == null)
+            if (schedule == null || schedule.TrainerId != trainerId) 
             {
-                return NotFound();
+                return Unauthorized();
             }
-            ViewData["SessionId"] = new SelectList(_context.Sessions, "SessionId", "SessionId", schedule.SessionId);
-            ViewData["TrainerId"] = new SelectList(_context.Userrs, "UserId", "UserId", schedule.TrainerId);
-            return View(schedule);
+
+            var scheduleForm = new ScheduleForm
+            {
+                ScheduleId = schedule.ScheduleId,
+                AvailableFrom = schedule.AvailableFrom,
+                AvailableTo = schedule.AvailableTo,
+                SessionId = schedule.SessionId,
+                DayOfWeek = schedule.DayOfWeek
+            };
+
+            ViewData["SessionId"] = new SelectList(_context.Sessions, "SessionId", "SessionId", scheduleForm.SessionId);
+            return View(scheduleForm);
         }
+
 
         // POST: Schedules/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(decimal id, [Bind("ScheduleId,TrainerId,AvailableFrom,AvailableTo,SessionId,DayOfWeek")] Schedule schedule)
+        public async Task<IActionResult> Edit(decimal id, ScheduleForm scheduleForm)
         {
-            if (id != schedule.ScheduleId)
+            var trainerId = HttpContext.Session.GetInt32("UserId"); // Retrieve TrainerId from session
+            if (trainerId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (id != scheduleForm.ScheduleId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var schedule = await _context.Schedules.FindAsync(id);
+                if (schedule == null || schedule.TrainerId != trainerId) // Verify ownership
+                {
+                    return Unauthorized();
+                }
+
+                schedule.AvailableFrom = scheduleForm.AvailableFrom;
+                schedule.AvailableTo = scheduleForm.AvailableTo;
+                schedule.SessionId = scheduleForm.SessionId;
+                schedule.DayOfWeek = scheduleForm.DayOfWeek;
+
                 try
                 {
                     _context.Update(schedule);
@@ -110,7 +163,7 @@ namespace gym.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ScheduleExists(schedule.ScheduleId))
+                    if (!ScheduleExists(scheduleForm.ScheduleId))
                     {
                         return NotFound();
                     }
@@ -121,9 +174,9 @@ namespace gym.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SessionId"] = new SelectList(_context.Sessions, "SessionId", "SessionId", schedule.SessionId);
-            ViewData["TrainerId"] = new SelectList(_context.Userrs, "UserId", "UserId", schedule.TrainerId);
-            return View(schedule);
+
+            ViewData["SessionId"] = new SelectList(_context.Sessions, "SessionId", "SessionId", scheduleForm.SessionId);
+            return View(scheduleForm);
         }
 
         // GET: Schedules/Delete/5

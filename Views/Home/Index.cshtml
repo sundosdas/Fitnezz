@@ -1,8 +1,9 @@
 ﻿@model IEnumerable<Testimonial>
 @{
-    ViewData["Title"] = "Member Dashboard";
+    ViewData["Title"] = "Fitnezz GYM";
 }
-<header role="banner">
+
+<header role="banner" style="margin-block:revert-layer">
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="@Url.Action("Index", "Home")">Fitne<span>zz</span></a>
@@ -13,7 +14,7 @@
             <div class="collapse navbar-collapse" id="navbarsExample05">
                 <ul class="navbar-nav mr-auto pl-lg-5 pl-0">
                     <li class="nav-item">
-                        <a class="nav-link active" href="@Url.Action("Index", "Home")">Home</a>
+                        <a class="nav-link active" href="@Url.Action("MemberView", "Home")">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="@Url.Action("AboutUs", "Home")">About Us</a>
@@ -24,23 +25,18 @@
                     <li class="nav-item">
                         <a class="nav-link" href="@Url.Action("Index", "MembershipPlans")">Membership Plans</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Testimonials", "Member")">Testimonials</a>
+                    </li>
                 </ul>
 
+                <!-- Profile Section -->
                 <ul class="navbar-nav ml-auto">
-                   <!-- Guest Section -->
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-primary text-white mx-1" href="@Url.Action("Login", "Auth")">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-secondary text-white mx-1" href="@Url.Action("Register", "Auth")">Register</a>
-                    </li>
-                 
                 </ul>
             </div>
         </div>
     </nav>
 </header>
-
 <!-- Slider Section -->
 <section class="home-slider owl-carousel">
     <!-- Slider 1 -->
@@ -53,7 +49,7 @@
                         <h1>@ViewBag.HomepageContent.SliderTitle1</h1>
                         <p class="mb-5">@ViewBag.HomepageContent.SliderSubtitle1</p>
                         <p>
-                            <a href="#plans" class="btn btn-white btn-outline-white">Get Started</a>
+                            <a href="@Url.Action("Register", "Auth")" class="btn btn-white btn-outline-white">Get Started</a>
                         </p>
                     </div>
                 </div>
@@ -68,7 +64,7 @@
                         <h1>@ViewBag.HomepageContent.SliderTitle2</h1>
                         <p class="mb-5">@ViewBag.HomepageContent.SliderSubtitle2</p>
                         <p>
-                            <a href="#plans" class="btn btn-white btn-outline-white">Get Started</a>
+                            <a href="@Url.Action("Register", "Auth")" class="btn btn-white btn-outline-white">Get Started</a>
                         </p>
                     </div>
                 </div>
@@ -97,7 +93,7 @@
     <div class="owl-carousel centernonloop">
         @foreach (var plan in ViewBag.Plans)
         {
-            <a href="@Url.Action("Details", "MembershipPlan", new { id = plan.PlanId })" class="item-class">
+            <a href="@Url.Action("Details", "MembershipPlans", new { id = plan.PlanId })" class="item-class">
                 <div class="text">
                     <p class="class-price">$@plan.Price</p>
                     <h2 class="class-heading">@plan.Name</h2>
@@ -122,10 +118,10 @@
     </div>
 
     <div class="container">
-        <div class="row no-gutters">
+        <div class="row no-gutters" >
             @foreach (var workout in ViewBag.Workouts)
             {
-                <div class="col-md-6">
+                <div class="col-md-6" style="border:thin">
                     <div class="sched d-block d-lg-flex">
                         <div class="bg-image order-2" style="background-image: url('@workout.ImagePath');"></div>
                         <div class="text order-1">
@@ -134,7 +130,6 @@
                             <p class="sched-time">
                                 <span><span class="fa fa-user"></span> Trainer: @workout.TrainerName</span>
                             </p>
-                            <p><a href="#" class="btn btn-primary btn-sm">Join Now</a></p>
                         </div>
                     </div>
                 </div>
@@ -258,7 +253,6 @@
                                     }
                                 </p>
                                 <p>@review.FeedbackText</p>
-                                <p><a href="#" class="btn btn-primary btn-sm">Read More</a></p>
                             </div>
                         </div>
                     </div>

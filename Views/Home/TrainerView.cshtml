@@ -1,8 +1,225 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Trainer Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout .cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-scroller">
+    <!-- Navbar -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+            <a class="navbar-brand brand-logo mr-5" href="#">
+                <img src="@Url.Content("~/AdminAssets/images/logo.svg")" class="mr-2" alt="logo" />
+            </a>
+            <a class="navbar-brand brand-logo-mini" href="#">
+                <img src="@Url.Content("~/AdminAssets/images/logo-mini.svg")" alt="logo" />
+            </a>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+            <ul class="navbar-nav navbar-nav-right">
+                <li class="nav-item nav-profile dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+                        <img src="@Url.Content(ViewBag.ProfilePicPath)" alt="profile" />
+                        <span>@ViewBag.FirstName</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                        <a class="dropdown-item" href="@Url.Action("Profile", "Home")">
+                            <i class="ti-settings text-primary"></i>
+                            Profile
+                        </a>
+                        <form asp-action="Logout" asp-controller="Auth" method="post" class="dropdown-item p-0">
+                            <button type="submit" class="btn btn-link p-0">
+                                <i class="ti-power-off text-primary"></i>
+                                Logout
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid page-body-wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("TrainerView", "Home")">
+                        <i class="icon-grid menu-icon"></i>
+                        <span class="menu-title">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="@Url.Action("Profile", "Home")">
+                        <i class="icon-head menu-icon"></i>
+                        <span class="menu-title">Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <!-- Welcome Section -->
+                <div class="row">
+                    <div class="col-md-12 grid-margin">
+                        <h3 class="font-weight-bold">Welcome, @ViewBag.FirstName</h3>
+                        <h6 class="font-weight-normal">Manage your members, workout plans, and sessions from here.</h6>
+                    </div>
+                </div>
+
+                <!-- Members Section -->
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Your Members</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Member ID</th>
+                                                <th>Full Name</th>
+                                                <th>Email</th>
+                                                <th>Phone Number</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.Members != null && ViewBag.Members.Count > 0)
+                                            {
+                                                foreach (var member in ViewBag.Members)
+                                                {
+                                                    <tr>
+                                                        <td>@member.UserId</td>
+                                                        <td>@member.FullName</td>
+                                                        <td>@member.Email</td>
+                                                        <td>@member.Phone</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="4" class="text-center">No members assigned yet.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workout Plans Section -->
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Workout Plans</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Workout ID</th>
+                                                <th>Member Name</th>
+                                                <th>Goals</th>
+                                                <th>Details</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.WorkoutPlans != null && ViewBag.WorkoutPlans.Count > 0)
+                                            {
+                                                foreach (var plan in ViewBag.WorkoutPlans)
+                                                {
+                                                    <tr>
+                                                        <td>@plan.WorkoutId</td>
+                                                        <td>@plan.MemberName</td>
+                                                        <td>@plan.Goals</td>
+                                                        <td>@plan.Details</td>
+                                                        <td>
+                                                            <a href="@Url.Action("Edit", "WorkoutPlans", new { id = plan.WorkoutId })" class="btn btn-sm btn-primary">Edit</a>
+                                                            <a href="@Url.Action("Details", "WorkoutPlans", new { id = plan.WorkoutId })" class="btn btn-sm btn-info">View</a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="5" class="text-center">No workout plans created yet.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="@Url.Action("Create", "WorkoutPlans")" class="btn btn-success">Create Workout Plan</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sessions Section -->
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Your Sessions</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Session ID</th>
+                                                <th>Member Name</th>
+                                                <th>Start Time</th>
+                                                <th>End Time</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.Sessions != null && ViewBag.Sessions.Count > 0)
+                                            {
+                                                foreach (var session in ViewBag.Sessions)
+                                                {
+                                                    <tr>
+                                                        <td>@session.SessionId</td>
+                                                        <td>@session.MemberName</td>
+                                                        <td>@session.StartTime?.ToString("yyyy-MM-dd HH:mm")</td>
+                                                        <td>@session.EndTime?.ToString("yyyy-MM-dd HH:mm")</td>
+                                                        <td>@session.Status</td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="5" class="text-center">No sessions available.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="mt-3">
+                                    <a href="@Url.Action("Create", "Sessions")" class="btn btn-primary">
+                                        Create Session
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer" style="margin-top:100px;">
+                <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                    <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">© 2025 Trainer Dashboard</span>
+                </div>
+            </footer>
+        </div>
+    </div>
 </div>

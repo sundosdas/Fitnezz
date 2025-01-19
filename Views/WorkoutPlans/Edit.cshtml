@@ -1,10 +1,43 @@
-﻿@model gym.Models.WorkoutPlan
-
+﻿@model gym.Models.WPform
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<header role="banner" style="margin-block:revert-layer">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">Fitne<span>zz</span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarsExample05">
+                <ul class="navbar-nav mr-auto pl-lg-5 pl-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="@Url.Action("MemberView", "Home")">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("AboutUs", "Home")">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("ContactUs", "Home")">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "MembershipPlans")">Membership Plans</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Testimonials", "Member")">Testimonials</a>
+                    </li>
+                </ul>
+
+                <!-- Profile Section -->
+                <ul class="navbar-nav ml-auto">
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
 <h1>Edit</h1>
 
 <h4>WorkoutPlan</h4>
@@ -14,11 +47,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="WorkoutId" />
-            <div class="form-group">
-                <label asp-for="TrainerId" class="control-label"></label>
-                <select asp-for="TrainerId" class="form-control" asp-items="ViewBag.TrainerId"></select>
-                <span asp-validation-for="TrainerId" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="TrainerId" />
             <div class="form-group">
                 <label asp-for="MemberId" class="control-label"></label>
                 <select asp-for="MemberId" class="form-control" asp-items="ViewBag.MemberId"></select>

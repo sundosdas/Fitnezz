@@ -1,0 +1,150 @@
+﻿@model Contactuspage
+@{
+    ViewData["Title"] = "Contact  Us";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<body>
+
+    <header role="banner">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">Fitne<span>zz</span></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarsExample05">
+                    <ul class="navbar-nav mr-auto pl-lg-5 pl-0">
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Home")">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Aboutus", "Home")">About Us</a></li>
+                    </ul>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="memberDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-user-circle mr-2" style="font-size: 2rem;"></i> <!-- Increased icon size -->
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="memberDropdown">
+                                <a class="dropdown-item" href="@Url.Action("Register", "Auth")">Become a Member</a>
+                                <a class="dropdown-item" href="@Url.Action("Login", "Auth")">Login</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <section class="home-slider-loop-false inner-page owl-carousel" style="background-color: hsla(0, 100%, 90%, 0.3); position: relative; padding: 50px 0;">
+        <div class="container">
+            <div class="row slider-text align-items-center justify-content-center">
+                <div class="col-md-8 text-center col-sm-12 element-animate">
+                    <h1 style="color: #fff; font-size: 3rem; font-weight: bold;">Contact Us</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="section element-animate">
+        <div class="clearfix mb-5 pb-5">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12 text-center heading-wrap">
+                        <h2>Get In Touch</h2>
+                        <span class="back-text">Contact</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <form asp-action="Create" asp-controller="Contactusforms" method="post">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" name="name" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label for="phone">Phone</label>
+                                <input type="text" id="phone" name="phone" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <label for="message">Write Message</label>
+                                <textarea name="message" id="message" class="form-control" cols="30" rows="8" required></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <input type="submit" value="Send Message" class="btn btn-primary">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-lg-6 pl-2 pl-lg-5">
+                    <div class="col-md-8 mx-auto contact-form-contact-info">
+                        <h4 class="mb-5">Contact Details</h4>
+                        <p class="d-flex">
+                            <span class="ion-ios-location icon mr-5"></span>
+                            <span id="contact-address">@Model.Address</span>
+                        </p>
+                        <p class="d-flex">
+                            <span class="ion-ios-telephone icon mr-5"></span>
+                            <span id="contact-phone">@Model.Phone</span>
+                        </p>
+                        <p class="d-flex">
+                            <span class="ion-android-mail icon mr-5"></span>
+                            <span id="contact-email">@Model.Email</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Footer -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-md-4 mb-5">
+                    <h3>About Us</h3>
+                    <p class="mb-5">At Fitnezz Gym, we believe that fitness is not just a goal—it is a journey towards a better you. Our mission is to empower individuals to lead healthier, stronger, and more fulfilling lives.</p>
+                    <ul class="list-unstyled footer-link d-flex footer-social">
+                        <li><a href="#" class="p-2"><span class="fa fa-twitter"></span></a></li>
+                        <li><a href="#" class="p-2"><span class="fa fa-facebook"></span></a></li>
+                        <li><a href="#" class="p-2"><span class="fa fa-linkedin"></span></a></li>
+                        <li><a href="#" class="p-2"><span class="fa fa-instagram"></span></a></li>
+                    </ul>
+                </div>
+                <div class="col-md-5 mb-5">
+                    <h3>Contact Info</h3>
+                    <ul class="list-unstyled footer-link">
+                        <li class="d-block"><span>Address:</span> Amman, Dabouq 21 st.</li>
+                        <li><span>Telephone:</span> +962 786193557</li>
+                        <li><span>Email:</span> info@fitnezzgym.com</li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-5">
+                    <h3>Quick Links</h3>
+                    <ul class="list-unstyled footer-link">
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Disclaimers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+ </body>
